@@ -11,8 +11,7 @@ namespace Floors
     extern "C" void CheckReflective();
     extern "C" void EnableFloorReflectionCamera();
     void FixVisibilityFilter();
-    float CalculatePlaneHeight(int currLevel);
-    extern "C" void SetPlaneHeight();
+    extern "C" void ClampReflectionsToCamLevel();
     void ConsiderLevelZeroFloors();
     extern "C" void UpdateCameraOnLevelChange();
 }

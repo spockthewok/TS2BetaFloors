@@ -5,18 +5,16 @@ namespace
     struct FloorNode
     {
         const char *name;
-        FloorNode *next;
+        struct FloorNode *next;
     };
     FloorNode *nodeHead = nullptr;
 
     const DWORD SetLevelViewed_Exit = 0xA62A33;
-    const DWORD SetReflectionState_Exit = 0xAE4C99;
     const DWORD SetTile_Exit_1 = 0xAE6D08;
     const DWORD SetTile_Exit_2 = 0xAE70D3;
     const DWORD SetReflectionStateMaterialOverrides_Exit = 0xB6243B;
-    const DWORD ConfigureReflectionCamera_Exit = 0xB626E0;
-
-    const float stdLevelHeight = 3.0; // cWorldDB float constant (at 0x10235E0 in Windows binary)
+    const DWORD ConfigureReflectionCamera_Exit_1 = 0xB6263E;
+    const DWORD ConfigureReflectionCamera_Exit_2 = 0xB626E0;
 
     int camLevel = 0;
 }
@@ -39,6 +37,7 @@ namespace Floors
             jmp SetReflectionStateMaterialOverrides_Exit
         }
     }
+
     // Stores material name of reflective floor in linked list
     void AddFloorToList(const char *matName)
     {
@@ -49,6 +48,7 @@ namespace Floors
         node->next = nodeHead;
         nodeHead = node;
     }
+
     // Checks if passed material name is stored in linked list
     bool IsFloorReflective(const char *matName)
     {
@@ -62,6 +62,7 @@ namespace Floors
         }
         return false;
     }
+
     // Marks current cFloor object as reflective if its material name is in linked list
     void __declspec(naked) CheckReflective()
     {
@@ -79,6 +80,7 @@ namespace Floors
             jmp SetTile_Exit_1
         }
     }
+
     // Patches in call to method responsible for setting up reflection camera
     void __declspec(naked) EnableFloorReflectionCamera()
     {
@@ -95,43 +97,35 @@ namespace Floors
             jmp SetTile_Exit_2
         }
     }
+
     // Patches out checks in visibility filter that cause reflection ghosting for some reason
     void FixVisibilityFilter()
     {
         Hooking::Nop((BYTE *)0xB62256, 22);
     }
-    // Calculates reflection plane height based on current level and clamps it to current level
-    float CalculatePlaneHeight(int currLevel)
-    {
-        if (currLevel < camLevel)
-            currLevel = camLevel;
 
-        if (currLevel == 0)
-            return 0;
-        return (stdLevelHeight * currLevel) - 2.25;
-    }
-    // Sets reflection plane height based on current level
-    void __declspec(naked) SetPlaneHeight()
+    // Clamps reflection height calculations to current camera level
+    void __declspec(naked) ClampReflectionsToCamLevel()
     {
         __asm {
-            add esp,0x8
-            mov edx,[ebx]
-            mov ecx,ebx
-            call [edx+0x50] // cFloor::Level
-            push eax
-            call CalculatePlaneHeight
-            add esp,0x4
-            fchs
-            fstp [esp+0x34]
-            jmp ConfigureReflectionCamera_Exit
+            mov eax,[esp+0x14]
+            cmp eax,[camLevel]
+            je LAB_Exit
+            mov eax,[camLevel]
+            mov [esp+0x14],eax
+        LAB_Exit:
+            mov [esp+0x24],eax
+            jmp ConfigureReflectionCamera_Exit_1
         }
     }
+
     // cFloorManager::SetLevelViewed skips processing for floors on level 0
     // We need to patch this out so reflective floors at level 0 have their cameras updated correctly
     void ConsiderLevelZeroFloors()
     {
         Hooking::Nop((BYTE *)0xA62A10, 4);
     }
+
     // Detaches and reattaches reflection cameras on floor level change to keep reflections in sync
     void __declspec(naked) UpdateCameraOnLevelChange()
     {
