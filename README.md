@@ -44,7 +44,7 @@ outlined above.
 ### Plugin
 **For Sims2RPC**
 
-1. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2ReflectiveWater/releases/latest) section of this repository.
+1. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
 2. Extract the `.asi` plugin within the zip file to the `\TSBin\mods` directory, found under wherever you have the Sims 2 installed to. For example, on my machine,
 the plugin would be moved to:
 
@@ -56,11 +56,11 @@ the plugin would be moved to:
 2. Extract `dsound.dll` from the zip file and place it in the game's `\TSBin` directory. On my machine, it would go here:
 
    `E:\Games\The Sims 2\Fun with Pets\SP9\TSBin`
-3. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2ReflectiveWater/releases/latest) section of this repository.
+3. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
 4. Extract the `.asi` plugin within the zip file to the same `\TSBin` directory Ultimate ASI Loader was extracted to.
 
 ### Shaders
-1. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2ReflectiveWater/releases/latest) section of this repository.
+1. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
 
 2. Extract the `.package` file within the zip file to your Sims 2 `\Downloads` directory.
 
