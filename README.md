@@ -7,7 +7,7 @@ or [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader).
 
 | Prerelease | Mod |
 | :--------: | :-: |
-| <img src="media/prerelease.jpg" width="86.5%;" height="76.5%;"> | <img src="media/preview.png" width="100%;" height="100%;"> |
+| <img src="media/prerelease.jpg" width="86.5%;" height="76.5%;"> | <img src="media/preview.png" width="95%;" height="100%;"> |
 
 
 
