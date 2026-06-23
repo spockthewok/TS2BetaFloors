@@ -13,8 +13,7 @@ namespace
     const DWORD SetTile_Exit_1 = 0xAE6D08;
     const DWORD SetTile_Exit_2 = 0xAE70D3;
     const DWORD SetReflectionStateMaterialOverrides_Exit = 0xB6243B;
-    const DWORD ConfigureReflectionCamera_Exit_1 = 0xB6263E;
-    const DWORD ConfigureReflectionCamera_Exit_2 = 0xB626E0;
+    const DWORD ConfigureReflectionCamera_Exit = 0xB6263E;
 
     int camLevel = 0;
 }
@@ -115,7 +114,7 @@ namespace Floors
             mov [esp+0x14],eax
         LAB_Exit:
             mov [esp+0x24],eax
-            jmp ConfigureReflectionCamera_Exit_1
+            jmp ConfigureReflectionCamera_Exit
         }
     }
 

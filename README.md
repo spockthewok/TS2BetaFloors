@@ -7,13 +7,13 @@ or [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader).
 
 | Prerelease | Mod |
 | :--------: | :-: |
-| <img src="media/prerelease.jpg" width="475"> | <img src="media/preview.png" width="450"> |
+| <img src="media/prerelease.jpg" width="450" height="330"> | <img src="media/preview.png" width="450" height="330"> |
 
 
 
 ## Adding Reflections to Custom Floors
 The reflective floor shader has been assigned to a number of vanilla floors out of the box. If you wish to make certain custom floors reflective (or
-other vanilla floors not included by default), it is as simple as adding the desired floor to the bottom of the shader code in the provided `.package` file,
+other vanilla floors not included by default), it is as simple as adding the desired floor to the bottom of the floor shader code in the provided `.package` file,
 following the template below:
 
 ```
@@ -39,8 +39,6 @@ depending on the camera angle. This is an engine limitation and can't be fixed.
 
 - Mirrors on the floor below a reflective floor will be visible in the floor's reflection &mdash; this may be related to the render type sharing issue
 outlined above.
-
-- Mirrors visible in floor reflections may flash red.
 
 ## Installation
 ### Plugin
