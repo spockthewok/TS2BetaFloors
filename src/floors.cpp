@@ -9,7 +9,10 @@ namespace
     };
     FloorNode *nodeHead = nullptr;
 
-    const DWORD SetLevelViewed_Exit = 0xA62A33;
+    const DWORD SetLevelViewed_Exit_1 = 0xA62A20;
+    const DWORD SetLevelViewed_Exit_2 = 0xA62A2E;
+    const DWORD SetLevelViewed_Exit_3 = 0xA62A33;
+    const DWORD SetLevelViewed_Exit_4 = 0xA62A36;
     const DWORD SetTile_Exit_1 = 0xAE6D08;
     const DWORD SetTile_Exit_2 = 0xAE70D3;
     const DWORD SetReflectionStateMaterialOverrides_Exit = 0xB6243B;
@@ -118,11 +121,28 @@ namespace Floors
         }
     }
 
-    // cFloorManager::SetLevelViewed skips processing for floors on level 0
-    // We need to patch this out so reflective floors at level 0 have their cameras updated correctly
-    void ConsiderLevelZeroFloors()
+    // cFloorManager::SetLevelViewed skips processing for all floors on level 0
+    // We need to alter this logic so only reflective floors at level 0 are processed to allow their cameras update correctly
+    void __declspec(naked) ConsiderLevelZeroFloors()
     {
-        Hooking::Nop((BYTE *)0xA62A10, 4);
+        __asm {
+            mov eax,[ebx]
+            push esi
+            mov ecx,ebx
+            call [eax+0x4C]
+            test eax,eax
+            jz LAB_Skip
+            cmp [eax+0x80],0x0
+            je LAB_Skip
+            test esi,esi
+            jz LAB_Level0
+            jmp SetLevelViewed_Exit_1
+        LAB_Level0:
+            mov ecx,0x123A594 // "floorlocalgridblack"
+            jmp SetLevelViewed_Exit_2
+        LAB_Skip:
+            jmp SetLevelViewed_Exit_4
+        }
     }
 
     // Detaches and reattaches reflection cameras on floor level change to keep reflections in sync
@@ -146,7 +166,7 @@ namespace Floors
             popad
             push ecx
             mov ecx,eax
-            jmp SetLevelViewed_Exit
+            jmp SetLevelViewed_Exit_3
         }
     }
 }

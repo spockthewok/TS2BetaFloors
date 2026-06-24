@@ -64,7 +64,13 @@ the plugin would be moved to:
 
 2. Extract the `.package` file within the zip file to your Sims 2 `\Downloads` directory.
 
+3. If you're using the mod [Build/Buy Grid Follows Cursor](https://modthesims.info/d/696189/build-buy-grid-follows-cursor.html), you should also download
+`CompatibilityPatches.zip` and extract the `.package` file within to your `\Downloads` directory too. This is a replacement for the default
+`zzz_Beta_Shaders.package`, so you should allow your operating system to overwrite the original file if prompted.
+
 ## Thanks
 [LazyDuchess](https://github.com/LazyDuchess), for the hooking code used in this mod.
 
 [Dorsal Axe](https://modthesims.info/m/6990975), for the beta material shaders shared [here](https://modthesims.info/t/608894).
+
+[CroconawSims](https://modthesims.info/m/10269790), for their mod [Build/Buy Grid Follows Cursor](https://modthesims.info/d/696189/build-buy-grid-follows-cursor.html).

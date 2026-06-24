@@ -12,6 +12,6 @@ namespace Floors
     extern "C" void EnableFloorReflectionCamera();
     void FixVisibilityFilter();
     extern "C" void ClampReflectionsToCamLevel();
-    void ConsiderLevelZeroFloors();
+    extern "C" void ConsiderLevelZeroFloors();
     extern "C" void UpdateCameraOnLevelChange();
 }
