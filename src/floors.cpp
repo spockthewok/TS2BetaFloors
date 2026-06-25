@@ -122,7 +122,7 @@ namespace Floors
     }
 
     // cFloorManager::SetLevelViewed skips processing for all floors on level 0
-    // We need to alter this logic so only reflective floors at level 0 are processed to allow their cameras update correctly
+    // We need to alter this logic so reflective floors at level 0 are processed to allow their cameras to update correctly
     void __declspec(naked) ConsiderLevelZeroFloors()
     {
         __asm {
@@ -132,8 +132,6 @@ namespace Floors
             call [eax+0x4C]
             test eax,eax
             jz LAB_Skip
-            cmp [eax+0x80],0x0
-            je LAB_Skip
             test esi,esi
             jz LAB_Level0
             jmp SetLevelViewed_Exit_1

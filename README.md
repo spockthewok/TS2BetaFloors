@@ -4,12 +4,9 @@ A patch for The Sims 2 that attempts to restore the unused reflective floor func
 Made for use with The Sims 2: Ultimate Collection, using either [Sims2RPC](https://modthesims.info/d/648220/sims2rpc-modded-sims-2-launcher-for-mansion-and-garden.html)
 or [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader).
 
-
 | Prerelease | Mod |
 | :--------: | :-: |
 | <img src="media/prerelease.jpg" width="86.5%;" height="76.5%;"> | <img src="media/preview.png" width="95%;" height="100%;"> |
-
-
 
 ## Adding Reflections to Custom Floors
 The reflective floor shader has been assigned to a number of vanilla floors out of the box. If you wish to make certain custom floors reflective (or
