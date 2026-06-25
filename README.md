@@ -18,7 +18,7 @@ materialDefinition floor_txmt_name
    setDefinition FloorReflective
    addParam stdMatLayer 2
    addParam stdMatBaseTextureName floor_txtr_name
-   addParam reflectStrength 0.1 // I recommended using a small value for the reflection strength
+   addParam reflectStrength 0.1 // I recommend using a small value for the reflection strength
 end
 ```
 
