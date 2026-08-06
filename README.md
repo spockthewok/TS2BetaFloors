@@ -22,6 +22,10 @@ materialDefinition floor_txmt_name
 end
 ```
 
+> [!WARNING]
+> Custom floors with `#` characters in their material names won't work, as these denote comments in the game's shader code and will therefore be ignored
+> during parsing.
+
 ## Known Issues
 - The floor reflection system doesn't support multiple reflection planes, so all floor reflections are drawn from the same point.
 This introduces an issue where if a reflective floor is present on both the ground floor and second floor of a house, the reflections on the

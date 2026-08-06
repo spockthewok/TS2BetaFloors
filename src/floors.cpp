@@ -2,13 +2,6 @@
 
 namespace
 {
-    struct FloorNode
-    {
-        const char *name;
-        struct FloorNode *next;
-    };
-    FloorNode *nodeHead = nullptr;
-
     const DWORD SetLevelViewed_Exit_1 = 0xA62A20;
     const DWORD SetLevelViewed_Exit_2 = 0xA62A2E;
     const DWORD SetLevelViewed_Exit_3 = 0xA62A33;
@@ -18,19 +11,29 @@ namespace
     const DWORD SetReflectionStateMaterialOverrides_Exit = 0xB6243B;
     const DWORD ConfigureReflectionCamera_Exit = 0xB6263E;
 
+    std::vector<const char *> reflectiveFloors;
     int camLevel = 0;
 }
 
 namespace Floors
 {
-    // Gets material name of a floor defined as "FloorReflective"
+    static void AddReflectiveFloor(const char *matName)
+    {
+        if (!matName)
+            return;
+
+        reflectiveFloors.push_back(matName);
+    }
+
+    // (anonymous_namespace)::SetReflectionStateMaterialOverrides
+    // Gets material name of floor defined as "FloorReflective"
     void __declspec(naked) GetReflectiveFloorMaterial()
     {
         __asm {
             pushad
             mov eax,[esp+0x64]
             push eax
-            call AddFloorToList
+            call AddReflectiveFloor
             add esp,0x4
             popad
             mov edx,[edi]
@@ -40,32 +43,22 @@ namespace Floors
         }
     }
 
-    // Stores material name of reflective floor in linked list
-    void AddFloorToList(const char *matName)
-    {
-        if (!matName)
-            return;
-        FloorNode *node = new FloorNode;
-        node->name = matName;
-        node->next = nodeHead;
-        nodeHead = node;
-    }
-
-    // Checks if passed material name is stored in linked list
-    bool IsFloorReflective(const char *matName)
+    static bool IsFloorReflective(const char *matName)
     {
         if (!matName)
             return false;
 
-        for (FloorNode *node = nodeHead; node; node = node->next)
+        for (const char *floor : reflectiveFloors)
         {
-            if (_stricmp(matName, node->name) == 0)
+            if (_stricmp(matName, floor) == 0)
                 return true;
         }
+
         return false;
     }
 
-    // Marks current cFloor object as reflective if its material name is in linked list
+    // cFloor::SetTile
+    // Marks current cFloor object as reflective if its material name is in vector
     void __declspec(naked) CheckReflective()
     {
         __asm {
@@ -83,6 +76,7 @@ namespace Floors
         }
     }
 
+    // cFloor::SetTile
     // Patches in call to method responsible for setting up reflection camera
     void __declspec(naked) EnableFloorReflectionCamera()
     {
@@ -100,12 +94,14 @@ namespace Floors
         }
     }
 
+    // cFloorReflectionVisibilityQueryFilter::TestNode
     // Patches out checks in visibility filter that cause reflection ghosting for some reason
     void FixVisibilityFilter()
     {
         Hooking::Nop((BYTE *)0xB62256, 22);
     }
 
+    // (anonymous_namespace)::ConfigureReflectionCamera
     // Clamps reflection height calculations to current camera level
     void __declspec(naked) ClampReflectionsToCamLevel()
     {
@@ -121,8 +117,9 @@ namespace Floors
         }
     }
 
-    // cFloorManager::SetLevelViewed skips processing for all floors on level 0
-    // We need to alter this logic so reflective floors at level 0 are processed to allow their cameras to update correctly
+    // cFloorManager::SetLevelViewed
+    // Floors at level 0 are skipped during processing
+    // We need to alter this logic so reflection cameras for level 0 floors are updated correctly
     void __declspec(naked) ConsiderLevelZeroFloors()
     {
         __asm {
@@ -143,6 +140,7 @@ namespace Floors
         }
     }
 
+    // cFloorManager::SetLevelViewed
     // Detaches and reattaches reflection cameras on floor level change to keep reflections in sync
     void __declspec(naked) UpdateCameraOnLevelChange()
     {
