@@ -23,7 +23,7 @@ end
 ```
 
 > [!WARNING]
-> Custom floors with `#` characters in their material names won't work, as these denote comments in the game's shader code and will therefore be ignored
+> Custom floors with `#` characters in their TXMT/TXTR names won't work, as these denote comments in the game's shader code and will therefore be ignored
 > during parsing.
 
 ## Known Issues
@@ -42,8 +42,8 @@ depending on the camera angle. This is an engine limitation and can't be fixed.
 outlined above.
 
 ## Installation
-### Plugin
-**For Sims2RPC**
+### <ins>Plugin</ins>
+**Sims2RPC Users:**
 
 1. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
 2. Extract the `.asi` plugin within the zip file to the `\TSBin\mods` directory, found under wherever you have the Sims 2 installed to. For example, on my machine,
@@ -51,7 +51,7 @@ the plugin would be moved to:
 
    `E:\Games\The Sims 2\Fun with Pets\SP9\TSBin\mods`
 
-**For Ultimate ASI Loader**
+**Ultimate ASI Loader Users:**
 
 1. Download Ultimate ASI Loader from [here](https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases/download/Win32-latest/dsound-Win32.zip).
 2. Extract `dsound.dll` from the zip file and place it in the game's `\TSBin` directory. On my machine, it would go here:
@@ -60,7 +60,7 @@ the plugin would be moved to:
 3. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
 4. Extract the `.asi` plugin within the zip file to the same `\TSBin` directory Ultimate ASI Loader was extracted to.
 
-### Shaders
+### <ins>Shaders</ins>
 1. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
 
 2. Extract the `.package` file within the zip file to your Sims 2 `\Downloads` directory.
