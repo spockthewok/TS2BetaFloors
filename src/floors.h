@@ -5,11 +5,9 @@
 
 namespace Floors
 {
-    extern "C" void GetReflectiveFloorMaterial();
-    extern "C" void CheckReflective();
-    extern "C" void EnableFloorReflectionCamera();
+    extern "C" void InitCameraVar();
+    extern "C" void DetachCamerasOnShutdown();
     void FixVisibilityFilter();
-    extern "C" void ClampReflectionsToCamLevel();
     extern "C" void ConsiderLevelZeroFloors();
-    extern "C" void UpdateCameraOnLevelChange();
+    extern "C" void UpdateCamerasOnLevelChange();
 }

@@ -6,120 +6,53 @@ namespace
     const DWORD SetLevelViewed_Exit_2 = 0xA62A2E;
     const DWORD SetLevelViewed_Exit_3 = 0xA62A33;
     const DWORD SetLevelViewed_Exit_4 = 0xA62A36;
-    const DWORD SetTile_Exit_1 = 0xAE6D08;
-    const DWORD SetTile_Exit_2 = 0xAE70D3;
-    const DWORD SetReflectionStateMaterialOverrides_Exit = 0xB6243B;
-    const DWORD ConfigureReflectionCamera_Exit = 0xB6263E;
-
-    std::vector<const char *> reflectiveFloors;
-    int camLevel = 0;
+    const DWORD Shutdown_Exit = 0xAE4886;
+    const DWORD Initialize_Exit = 0xAE63CF;
 }
 
 namespace Floors
 {
-    static void AddReflectiveFloor(const char *matName)
-    {
-        if (!matName)
-            return;
-
-        reflectiveFloors.push_back(matName);
-    }
-
-    // (anonymous_namespace)::SetReflectionStateMaterialOverrides
-    // Gets material name of floor defined as "FloorReflective"
-    void __declspec(naked) GetReflectiveFloorMaterial()
+    // cFloor::Initialize
+    // cFloor::SetReflectionState checks one of the object's vars is not null before doing anything
+    // Var never gets initialised by default so we set it during object instantiation
+    void __declspec(naked) InitCameraVar()
     {
         __asm {
-            pushad
-            mov eax,[esp+0x64]
-            push eax
-            call AddReflectiveFloor
-            add esp,0x4
-            popad
-            mov edx,[edi]
-            mov ecx,edi
-            call [edx+0x4C]
-            jmp SetReflectionStateMaterialOverrides_Exit
+            mov ecx,ebx
+            call [eax+0xC]
+            mov [esi+0x80],0x1
+            jmp Initialize_Exit
         }
     }
 
-    static bool IsFloorReflective(const char *matName)
-    {
-        if (!matName)
-            return false;
-
-        for (const char *floor : reflectiveFloors)
-        {
-            if (_stricmp(matName, floor) == 0)
-                return true;
-        }
-
-        return false;
-    }
-
-    // cFloor::SetTile
-    // Marks current cFloor object as reflective if its material name is in vector
-    void __declspec(naked) CheckReflective()
+    // cFloor::Shutdown
+    // Detaches cameras as part of object destruction when exiting a lot
+    void __declspec(naked) DetachCamerasOnShutdown()
     {
         __asm {
-            mov edx,[esp+0xF8]
             pushad
-            push edx
-            call IsFloorReflective
-            test al,al
-            jz LAB_Exit
-            mov [edi+0x80],0x1 // Camera checks this is not null before doing anything, not initialised by default
-        LAB_Exit:
-            add esp,0x4
-            popad
-            jmp SetTile_Exit_1
-        }
-    }
-
-    // cFloor::SetTile
-    // Patches in call to method responsible for setting up reflection camera
-    void __declspec(naked) EnableFloorReflectionCamera()
-    {
-        __asm {
-            mov byte ptr [esp+0xE0],bl
-            cmp [edi+0x80],0x0
-            je LAB_Exit // Skip if reflective flag not set for object
-            pushad
-            mov ecx,edi
-            push 0x1 // Attach reflection camera
+            mov ecx,esi
+            push 0x0
             call cFloor::SetReflectionState
             popad
-        LAB_Exit:
-            jmp SetTile_Exit_2
+            mov [esi+0x80],0x0
+            mov ecx,[esi+0x84]
+            jmp Shutdown_Exit
         }
     }
 
     // cFloorReflectionVisibilityQueryFilter::TestNode
-    // Patches out checks in visibility filter that cause reflection ghosting for some reason
+    // Patches out height range checks in visibility filter that cause reflection ghosting
+    // It's possible to fix this by subtracting 0.75 from lower bound for certain node types
+    // This is much simpler and achieves the same result
     void FixVisibilityFilter()
     {
         Hooking::Nop((BYTE *)0xB62256, 22);
     }
 
-    // (anonymous_namespace)::ConfigureReflectionCamera
-    // Clamps reflection height calculations to current camera level
-    void __declspec(naked) ClampReflectionsToCamLevel()
-    {
-        __asm {
-            mov eax,[esp+0x14]
-            cmp eax,[camLevel]
-            je LAB_Exit
-            mov eax,[camLevel]
-            mov [esp+0x14],eax
-        LAB_Exit:
-            mov [esp+0x24],eax
-            jmp ConfigureReflectionCamera_Exit
-        }
-    }
-
     // cFloorManager::SetLevelViewed
     // Floors at level 0 are skipped during processing
-    // We need to alter this logic so reflection cameras for level 0 floors are updated correctly
+    // We need to alter this logic so reflection camera for level 0 floors gets updated correctly
     void __declspec(naked) ConsiderLevelZeroFloors()
     {
         __asm {
@@ -142,21 +75,25 @@ namespace Floors
 
     // cFloorManager::SetLevelViewed
     // Detaches and reattaches reflection cameras on floor level change to keep reflections in sync
-    void __declspec(naked) UpdateCameraOnLevelChange()
+    // Game can't handle multiple viewer nodes for one class so we only reattach camera for current level
+    void __declspec(naked) UpdateCamerasOnLevelChange()
     {
         __asm {
-            mov [camLevel],edi
             mov edx,[eax]
             pushad
-            cmp [eax+0x80],0x0 // Skip if floor not reflective
-            je LAB_Exit
             mov ecx,eax
-            push 0x0 // Detach reflection cameras
+            push 0x0
             call cFloor::SetReflectionState
             popad
             pushad
             mov ecx,eax
-            push 0x1 // Reattach reflection cameras
+            call [edx+0x50] // cFloor::Level
+            cmp eax,edi // EDI = currently viewed level
+            jne LAB_Exit
+            popad
+            pushad
+            mov ecx,eax
+            push 0x1
             call cFloor::SetReflectionState
         LAB_Exit:
             popad
