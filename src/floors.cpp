@@ -8,6 +8,9 @@ namespace
     const DWORD SetLevelViewed_Exit_4 = 0xA62A36;
     const DWORD Shutdown_Exit = 0xAE4886;
     const DWORD Initialize_Exit = 0xAE63CF;
+    const DWORD ConfigureReflectionCamera_Exit = 0xB62636;
+
+    int cVertex[3];
 }
 
 namespace Floors
@@ -100,6 +103,42 @@ namespace Floors
             push ecx
             mov ecx,eax
             jmp SetLevelViewed_Exit_3
+        }
+    }
+
+    static void BuildVertexStruct(int currX, int currY)
+    {
+        cVertex[0] = currX;
+        cVertex[1] = currY;
+        // cWorldDB::IsWaterVertex requires z coord to be 0
+        cVertex[2] = 0;
+    }
+
+    // (anonymous_namespace)::ConfigureReflectionCamera
+    // Game calculates reflection plane height using elevation of tile at centre of lot
+    // Doesn't account for there being a pond at the centre, which would put plane at bottom of pond
+    // This checks whether current tile is under water and increments y coord until a valid tile is found
+    void __declspec(naked) FindValidTileForPlane()
+    {
+        __asm {
+            mov [esp+0x1C],eax
+        LAB_Loop:
+            push eax
+            push ebp
+            call BuildVertexStruct
+            add esp,0x8
+            mov edx,[esi]
+            push offset cVertex
+            mov ecx,esi
+            call [edx+0xE0] // cWorldDB::IsWaterVertex
+            test al,al
+            jz LAB_Exit
+            inc dword ptr [esp+0x1C]
+            mov eax,[esp+0x1C]
+            jmp LAB_Loop
+        LAB_Exit:
+            mov edx,[esi]
+            jmp ConfigureReflectionCamera_Exit
         }
     }
 }

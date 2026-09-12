@@ -9,5 +9,6 @@ namespace Core
         Floors::FixVisibilityFilter();
         Hooking::MakeJMP((BYTE *)0xA62A10, (DWORD)Floors::ConsiderLevelZeroFloors, 6);
         Hooking::MakeJMP((BYTE *)0xA62A2E, (DWORD)Floors::UpdateCamerasOnLevelChange, 5);
+        Hooking::MakeJMP((BYTE *)0xB62630, (DWORD)Floors::FindValidTileForPlane, 6);
     }
 }
