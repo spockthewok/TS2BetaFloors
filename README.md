@@ -41,6 +41,10 @@ reflection camera, only one will be used at a time.
    viewed will have its reflection camera attached. A side effect of this is that the reflections for lower levels will be shifted upwards to the height
    of the current level and get cut off, but this is only noticeable if reflective floors are placed outside.
 
+   In fact, this engine limitation is visible with any reflective surface that can be placed at varying elevations and relies on a viewer node for its
+   reflections. For example, swimming pools on elevated terrain will reflect what pools at the ground level are seeing, and the same problem also occurs
+   with the pond water in Castaway Stories.
+
 - The height of each camera's reflection plane is calculated using the elevation of the floor tile at the centre of the lot, presumably because this
 is where houses are commonly built. This is fine in most circumstances, but if a lot has particularly uneven terrain, or has multiple buildings
 of differing elevations, reflections can become inaccurate.

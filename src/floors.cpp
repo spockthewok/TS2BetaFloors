@@ -88,18 +88,14 @@ namespace Floors
             push 0x0
             call cFloor::SetReflectionState
             popad
-            pushad
-            mov ecx,eax
-            call [edx+0x50] // cFloor::Level
-            cmp eax,edi // EDI = currently viewed level
+            cmp esi,edi // ESI = level of cFloor being processed, EDI = currently viewed level
             jne LAB_Exit
-            popad
             pushad
             mov ecx,eax
             push 0x1
             call cFloor::SetReflectionState
-        LAB_Exit:
             popad
+        LAB_Exit:
             push ecx
             mov ecx,eax
             jmp SetLevelViewed_Exit_3
