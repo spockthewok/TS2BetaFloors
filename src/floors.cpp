@@ -8,7 +8,8 @@ namespace
     const DWORD SetLevelViewed_Exit_4 = 0xA62A36;
     const DWORD Shutdown_Exit = 0xAE4886;
     const DWORD Initialize_Exit = 0xAE63CF;
-    const DWORD ConfigureReflectionCamera_Exit = 0xB62636;
+    const DWORD ConfigureReflectionCamera_Exit_1 = 0xB62630;
+    const DWORD ConfigureReflectionCamera_Exit_2 = 0xB62653;
 
     int cVertex[3];
 }
@@ -66,9 +67,9 @@ namespace Floors
             test eax,eax
             jz LAB_Skip
             test esi,esi
-            jz LAB_Level0
+            jz LAB_LevelZero
             jmp SetLevelViewed_Exit_1
-        LAB_Level0:
+        LAB_LevelZero:
             mov ecx,0x123A594 // "floorlocalgridblack"
             jmp SetLevelViewed_Exit_2
         LAB_Skip:
@@ -113,14 +114,15 @@ namespace Floors
     // (anonymous_namespace)::ConfigureReflectionCamera
     // Game calculates reflection plane height using elevation of tile at centre of lot
     // Doesn't account for there being a pond at the centre, which would put plane at bottom of pond
-    // This checks whether current tile is under water and increments y coord until a valid tile is found
+    // This checks if centre tile is under water and decrements y coord until valid tile is found
+    // cWorldDB::IsWaterVertex isn't 100% reliable, so we ensure elevation of tile is not negative
     void __declspec(naked) FindValidTileForPlane()
     {
         __asm {
-            mov [esp+0x1C],eax
-        LAB_Loop:
-            push eax
+            call [edx+0xF8] // cWorldDB::FloorElevation
+            fstp [esp+0x48]
             push ebp
+            push [esp+0x20]
             call BuildVertexStruct
             add esp,0x8
             mov edx,[esi]
@@ -128,13 +130,24 @@ namespace Floors
             mov ecx,esi
             call [edx+0xE0] // cWorldDB::IsWaterVertex
             test al,al
-            jz LAB_Exit
-            inc dword ptr [esp+0x1C]
+            jnz LAB_DecrementY
+            fldz
+            fcomp [esp+0x48]
+            fnstsw ax
+            cmp [esp+0x14],0x0
+            jg LAB_AboveLevelZero
+            test ah,0x41
+            jnp LAB_Exit // If floor elevation >= 0
+            jmp LAB_DecrementY
+        LAB_AboveLevelZero:
+            test ah,0x5
+            jnp LAB_Exit // If floor elevation > 0
+        LAB_DecrementY:
+            dec ebp
             mov eax,[esp+0x1C]
-            jmp LAB_Loop
+            jmp ConfigureReflectionCamera_Exit_1
         LAB_Exit:
-            mov edx,[esi]
-            jmp ConfigureReflectionCamera_Exit
+            jmp ConfigureReflectionCamera_Exit_2
         }
     }
 }
