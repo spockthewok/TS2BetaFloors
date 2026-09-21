@@ -33,8 +33,8 @@ end
 > during parsing.
 
 ## Known Issues
-- The game doesn't support/can't handle a single class having multiple viewer nodes, so despite each level of a house having its own separate
-reflection camera, only one will be used at a time.
+-  The game doesn't support/can't handle a single class having multiple viewer nodes, so despite each level of a house having its own separate
+   reflection camera, only one will be used at a time.
 
    This introduces an issue where if a reflective floor is present on both the ground level and second level of a house, the reflections for the
    floor on the second level will be drawn as if it was at the ground level &mdash; to work around this, I've made it so only the level currently being
@@ -45,23 +45,23 @@ reflection camera, only one will be used at a time.
    reflections. For example, swimming pools on elevated terrain will reflect what pools at the ground level are seeing, and the same problem also occurs
    with the pond water in Castaway Stories.
 
-- The height of each camera's reflection plane is calculated using the elevation of the floor tile at the centre of the lot, presumably because this
-is where houses are commonly built. This is fine in most circumstances, but if a lot has particularly uneven terrain, or has multiple buildings
-of differing elevations, reflections can become inaccurate.
+-  The height of each camera's reflection plane is calculated using the elevation of the floor tile at the centre of the lot, presumably because this
+   is where houses are commonly built. This is fine in most circumstances, but if a lot has particularly uneven terrain, or has multiple buildings
+   of differing elevations, reflections can become inaccurate.
 
-- Likewise, the game has no concept of basements (the lowest level it considers is level 0, the ground floor), so the reflections for any
-reflective floors placed below ground level will be drawn from the base height of the lot's terrain.
+-  Likewise, the game has no concept of basements (the lowest level it considers is level 0, the ground floor), so the reflections for any
+   reflective floors placed below ground level will be drawn from the base height of the lot's terrain.
 
-- Mirrors on the levels below a reflective floor will be visible in the floor's reflection, due to the stenciling method mirrors use to mark out and
-project their reflections.
+-  Mirrors on the levels below a reflective floor will be visible in the floor's reflection, due to the stenciling method mirrors use to mark out and
+   project their reflections.
 
 ## Installation
 ### <ins>Plugin</ins>
 **Sims2RPC Users:**
 
-1. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
-2. Extract the `.asi` plugin within the zip file to the `\TSBin\mods` directory, found under wherever you have the Sims 2 installed to. For example, on my machine,
-the plugin would be moved to:
+1. Download `TS2BetaFloors.zip`, found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
+2. Extract `TS2BetaFloors.asi` from the zip file to the `\TSBin\mods` directory, found wherever you have the Sims 2 installed. For example,
+   on my machine, it would be extracted to:
 
    `E:\Games\The Sims 2\Fun with Pets\SP9\TSBin\mods`
 
@@ -71,21 +71,32 @@ the plugin would be moved to:
 2. Extract `dsound.dll` from the zip file and place it in the game's `\TSBin` directory. On my machine, it would go here:
 
    `E:\Games\The Sims 2\Fun with Pets\SP9\TSBin`
-3. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
-4. Extract the `.asi` plugin within the zip file to the same `\TSBin` directory Ultimate ASI Loader was extracted to.
+3. Download `TS2BetaFloors.zip`, found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
+4. Extract `TS2BetaFloors.asi` from the zip file to the same `\TSBin` directory Ultimate ASI Loader was extracted to.
 
 ### <ins>Shaders</ins>
-1. Download the zip file found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
+1. Download `TS2BetaFloors.zip`, found under the [Releases](https://github.com/spockthewok/TS2BetaFloors/releases/latest) section of this repository.
+2. Extract one of the `.package` files within the `Shaders` folder to your Sims 2 `\Downloads` directory. Which version you should choose depends on which
+   of these mods you use:
 
-2. Extract the `.package` file within the zip file to your Sims 2 `\Downloads` directory.
+   - <ins>Build Buy Grid Follows Cursor</ins>: [Build/Buy Grid Follows Cursor](https://modthesims.info/d/696189/build-buy-grid-follows-cursor.html).
 
-3. If you're using the mod [Build/Buy Grid Follows Cursor](https://modthesims.info/d/696189/build-buy-grid-follows-cursor.html), you should also download
-`CompatibilityPatches.zip` and extract the `.package` file within to your `\Downloads` directory too. This is a replacement for the default
-`zzz_Beta_Floors.package`, so you should allow your operating system to overwrite the original file if prompted.
+   - <ins>Maxis</ins>: None of the above.
+
+## Compatibility
+The plugin from this mod conflicts with the pond reflections feature from [TS2ReflectiveWater](https://github.com/spockthewok/TS2ReflectiveWater), as
+it also uses the cut floor reflection system. See the mod's [README](https://github.com/spockthewok/TS2ReflectiveWater/blob/main/README.md#reflective-pond-water)
+for more information.
+
+## Alternative Mods
+[Reflective Walls & Floors](https://www.thesimsresource.com/downloads/546583) by Murano &mdash; adds reflective overlays that can be placed on
+walls/floors. Both mods can be used together without issue, and their edits to the mirror shaders are included in this mod by default.
 
 ## Thanks
 [LazyDuchess](https://github.com/LazyDuchess), for the hooking code used in this mod.
 
 [Dorsal Axe](https://modthesims.info/m/6990975), for the beta material shaders shared [here](https://modthesims.info/t/608894).
 
-[CroconawSims](https://modthesims.info/m/10269790), for their mod [Build/Buy Grid Follows Cursor](https://modthesims.info/d/696189/build-buy-grid-follows-cursor.html).
+[CroconawSims](https://modthesims.info/m/10269790), for [Build/Buy Grid Follows Cursor](https://modthesims.info/d/696189/build-buy-grid-follows-cursor.html).
+
+[Murano](https://www.thesimsresource.com/artists/Murano/), for their [Reflective Walls & Floors](https://www.thesimsresource.com/downloads/546583) mod.
